@@ -3221,6 +3221,8 @@ class ChartAxisRendererDetails {
                 textStyle.color ?? renderingDetails.chartTheme.axisLabelColor);
         tempInterval = visibleLabels[i].value.toDouble();
         final Size textSize = measureText(labelText, textStyle, 0);
+        final Size rotatedTextSize = measureText(labelText, textStyle, angle);
+        debugPrint('label $labelText size $textSize $rotatedTextSize ');
         pointY = (valueToCoefficient(
                     tempInterval, axisRenderer._axisRendererDetails) *
                 axisBounds.height) +
@@ -3228,9 +3230,11 @@ class ChartAxisRendererDetails {
         pointY = ((axisBounds.top + axisBounds.height) -
                 ((axisBounds.top - pointY).abs())) -
             textSize.height / 2;
-        pointX = _getPointX(axisRenderer, textSize, axisBounds);
+        pointX = _getPointX(axisRenderer, rotatedTextSize, axisBounds);
         final ChartLocation location = getRotatedTextLocation(
             pointX, pointY, labelText, textStyle, angle, axis);
+        debugPrint(
+            'label $labelText pointX $pointX pointY $pointY location ${location.x} ${location.y}');
         if (axis.labelAlignment == LabelAlignment.center) {
           pointX = location.x;
           pointY = location.y;
@@ -3255,8 +3259,9 @@ class ChartAxisRendererDetails {
         ///  Edge label placement for y-Axis
         if (axis.edgeLabelPlacement == EdgeLabelPlacement.shift) {
           if (axis.labelAlignment == LabelAlignment.center) {
-            if (i == 0 && axisBounds.bottom <= pointY + textSize.height / 2) {
-              pointY = axisBounds.top + axisBounds.height - textSize.height;
+            if (i == 0 &&
+                axisBounds.bottom <= pointY + rotatedTextSize.height / 2) {
+              pointY = axisBounds.top + axisBounds.height;
             } else if (i == visibleLabels.length - 1 &&
                 axisBounds.top >= pointY + textSize.height / 2) {
               pointY = axisBounds.top;
@@ -3284,7 +3289,6 @@ class ChartAxisRendererDetails {
             continue;
           }
         }
-        final Size rotatedTextSize = measureText(labelText, textStyle, angle);
         visibleLabels[i]._labelRegion = axis.labelRotation == 0
             ? Rect.fromLTWH(pointX, pointY, textSize.width, textSize.height)
             : Rect.fromLTWH(
@@ -3396,6 +3400,7 @@ class ChartAxisRendererDetails {
         textStyle: style,
         fontColor: style.color ?? renderingDetails.chartTheme.axisTitleColor);
     final Size textSize = measureText(title, style);
+    final Size rotatedTextSize = measureText(title, style, labelRotation);
     double left = 0.0;
     final ChartAxisRendererDetails axisRendererDetails =
         axisRenderer._axisRendererDetails;
@@ -3439,7 +3444,13 @@ class ChartAxisRendererDetails {
         : axis.title.alignment == ChartAlignment.far
             ? point = Offset(left,
                 stateProperties.chartAxis.axisClipRect.top + textSize.width / 2)
-            : point = Offset(left, axisBounds.top + (axisBounds.height / 2));
+            : point = Offset(
+                left,
+                axisBounds.top +
+                    (axisBounds.height / 2) -
+                    (axis.opposedPosition
+                        ? textSize.width / 2
+                        : -textSize.width / 2));
     if (seriesRenderers.isNotEmpty || name == 'primaryYAxis') {
       drawText(canvas, title, point, style, labelRotation);
     }

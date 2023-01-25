@@ -54,18 +54,10 @@ void drawText(Canvas canvas, String text, Offset point, TextStyle style,
   tp.layout();
   canvas.save();
   canvas.translate(point.dx, point.dy);
-  final Paint paint = Paint();
-  paint.color = Colors.amber;
-  paint.style = PaintingStyle.fill;
-
-  Offset labelOffset = Offset.zero;
   if (angle != null && angle > 0) {
     canvas.rotate(degreeToRadian(angle));
-    // labelOffset = Offset(-tp.width / 2, -tp.height / 2);
   }
-
-  canvas.drawRect(Rect.fromLTWH(0, 0, tp.width, tp.height), paint);
-  tp.paint(canvas, labelOffset);
+  tp.paint(canvas, Offset.zero);
   canvas.restore();
 }
 
@@ -980,13 +972,9 @@ ChartLocation getRotatedTextLocation(double pointX, double pointY,
     final Size textSize = measureText(labelText, textStyle);
     final Size rotateTextSize = measureText(labelText, textStyle, angle);
 
-    if (angle == 90) {
-      pointX += textSize.width / 2;
-      pointY += textSize.height / 2;
-      return ChartLocation(pointX, pointY);
-    } else if (angle == 270) {
-      pointX += textSize.width / 2;
-      pointY += textSize.height / 2;
+    if (angle == 90 || angle == 270) {
+      pointX += textSize.width / 2 - rotateTextSize.height / 2;
+      pointY += textSize.height / 2 + rotateTextSize.height / 2;
       return ChartLocation(pointX, pointY);
     }
 
