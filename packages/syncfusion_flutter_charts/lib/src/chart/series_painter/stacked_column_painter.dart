@@ -349,10 +349,8 @@ void _stackedRectPainter(
           ShaderDetails(stateProperties.chartAxis.axisClipRect, 'series'));
     }
     // Clip rect will be added for series.
-    axisClipRect = calculatePlotOffset(
-        stateProperties.chartAxis.axisClipRect,
-        Offset(seriesRendererDetails.xAxisDetails!.axis.plotOffset,
-            seriesRendererDetails.yAxisDetails!.axis.plotOffset));
+    axisClipRect = calculatePlotOffset(stateProperties.chartAxis.axisClipRect,
+        Offset(0, seriesRendererDetails.yAxisDetails!.axis.plotOffset));
     canvas.clipRect(axisClipRect);
     int segmentIndex = -1;
     if (seriesRendererDetails.visibleDataPoints == null ||

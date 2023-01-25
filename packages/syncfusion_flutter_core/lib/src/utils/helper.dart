@@ -153,9 +153,13 @@ Size measureText(String textValue, TextStyle textStyle, [int? angle]) {
       text: TextSpan(text: textValue, style: textStyle));
   textPainter.layout();
 
-  if (angle != null) {
-    final Rect rect = rotatedTextSize(textPainter.size, angle);
-    size = Size(rect.width, rect.height);
+  if (angle != null && angle != 180) {
+    if (angle == 90 || angle == 270) {
+      size = Size(textPainter.height, textPainter.width);
+    } else {
+      final Rect rect = rotatedTextSize(textPainter.size, angle);
+      size = Size(rect.width, rect.height);
+    }
   } else {
     size = Size(textPainter.width, textPainter.height);
   }

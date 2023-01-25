@@ -54,11 +54,17 @@ void drawText(Canvas canvas, String text, Offset point, TextStyle style,
   tp.layout();
   canvas.save();
   canvas.translate(point.dx, point.dy);
+  final Paint paint = Paint();
+  paint.color = Colors.amber;
+  paint.style = PaintingStyle.fill;
+
   Offset labelOffset = Offset.zero;
   if (angle != null && angle > 0) {
     canvas.rotate(degreeToRadian(angle));
-    labelOffset = Offset(-tp.width / 2, -tp.height / 2);
+    // labelOffset = Offset(-tp.width / 2, -tp.height / 2);
   }
+
+  canvas.drawRect(Rect.fromLTWH(0, 0, tp.width, tp.height), paint);
   tp.paint(canvas, labelOffset);
   canvas.restore();
 }
@@ -970,9 +976,19 @@ VisibleRange calculateSideBySideInfo(CartesianSeriesRenderer seriesRenderer,
 /// The method returns rotated text location for the given angle.
 ChartLocation getRotatedTextLocation(double pointX, double pointY,
     String labelText, TextStyle textStyle, int angle, ChartAxis axis) {
-  if (angle > 0) {
+  if (angle > 0 && angle != 180) {
     final Size textSize = measureText(labelText, textStyle);
     final Size rotateTextSize = measureText(labelText, textStyle, angle);
+
+    if (angle == 90) {
+      pointX += textSize.width / 2;
+      pointY += textSize.height / 2;
+      return ChartLocation(pointX, pointY);
+    } else if (angle == 270) {
+      pointX += textSize.width / 2;
+      pointY += textSize.height / 2;
+      return ChartLocation(pointX, pointY);
+    }
 
     /// label rotation for 0 to 90.
     pointX += ((rotateTextSize.width - textSize.width).abs() / 2) +
