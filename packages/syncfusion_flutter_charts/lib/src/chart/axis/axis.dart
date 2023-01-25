@@ -3222,7 +3222,6 @@ class ChartAxisRendererDetails {
         tempInterval = visibleLabels[i].value.toDouble();
         final Size textSize = measureText(labelText, textStyle, 0);
         final Size rotatedTextSize = measureText(labelText, textStyle, angle);
-        debugPrint('label $labelText size $textSize $rotatedTextSize ');
         pointY = (valueToCoefficient(
                     tempInterval, axisRenderer._axisRendererDetails) *
                 axisBounds.height) +
@@ -3233,8 +3232,6 @@ class ChartAxisRendererDetails {
         pointX = _getPointX(axisRenderer, rotatedTextSize, axisBounds);
         final ChartLocation location = getRotatedTextLocation(
             pointX, pointY, labelText, textStyle, angle, axis);
-        debugPrint(
-            'label $labelText pointX $pointX pointY $pointY location ${location.x} ${location.y}');
         if (axis.labelAlignment == LabelAlignment.center) {
           pointX = location.x;
           pointY = location.y;
